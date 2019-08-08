@@ -3,6 +3,7 @@
   import Grid from "./Meetups/Grid.svelte";
   import TextInput from "./UI/TextInput.svelte";
   import Button from "./UI/Button.svelte";
+  import EditMeetup from "./Meetups/EditMeetup.svelte";
 
   // meetups
   let meetups = [
@@ -28,26 +29,17 @@
     }
   ];
 
-  let title = "",
-    subtitle = "",
-    contactEmail = "",
-    address = "",
-    description = "",
-    imageUrl = "";
+  let editMode = "";
 
-  function submit() {
+  function add({ detail }) {
     meetups = [
       {
         id: Math.random().toString(),
-        title,
-        subtitle,
-        description,
-        imageUrl,
-        address,
-        contactEmail
+        ...detail
       },
       ...meetups
     ];
+    editMode = "";
   }
 
   function toggleFavorite({ detail }) {
@@ -57,6 +49,10 @@
     // force value refresh
     meetups = meetups;
   }
+
+  function cancelEdit() {
+    editMode = "";
+  }
 </script>
 
 <style>
@@ -64,34 +60,20 @@
     margin-top: 5rem;
   }
 
-  form {
-    width: 30rem;
-    max-width: 90%;
-    margin: auto;
+  .meetup-control {
+    margin: 1rem;
   }
 </style>
 
 <Header />
 
 <main>
-  <!-- Form shit -->
-  <form on:submit|preventDefault={submit}>
-    <TextInput id="title" label="Title" bind:value={title} />
-    <TextInput id="subtitle" label="Subtitle" bind:value={subtitle} />
-    <TextInput id="address" label="Address" bind:value={address} />
-    <TextInput id="imageUrl" label="Image URL" bind:value={imageUrl} />
-    <TextInput
-      inputType="email"
-      id="email"
-      label="Email"
-      bind:value={contactEmail} />
-    <TextInput
-      inputType="textarea"
-      rows="3"
-      id="description"
-      label="Description"
-      bind:value={description} />
-    <Button type="submit">Save</Button>
-  </form>
+  {#if editMode === 'add'}
+    <EditMeetup on:save={add} on:cancel={cancelEdit} />
+  {:else}
+    <div class="meetup-control">
+      <Button on:click={() => (editMode = 'add')}>New Meetup</Button>
+    </div>
+  {/if}
   <Grid {meetups} on:togglefavorite={toggleFavorite} />
 </main>
