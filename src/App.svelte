@@ -49,6 +49,14 @@
       ...meetups
     ];
   }
+
+  function toggleFavorite({ detail }) {
+    const meetup = meetups.find(m => m.id === detail);
+    meetup.isFavorite = !meetup.isFavorite;
+
+    // force value refresh
+    meetups = meetups;
+  }
 </script>
 
 <style>
@@ -85,5 +93,5 @@
       bind:value={description} />
     <Button type="submit">Save</Button>
   </form>
-  <Grid {meetups} />
+  <Grid {meetups} on:togglefavorite={toggleFavorite} />
 </main>

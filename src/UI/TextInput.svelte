@@ -1,8 +1,8 @@
 <script>
-  export let inputType;
+  export let inputType = 0;
   export let id;
   export let label;
-  export let rows;
+  export let rows = 0;
   export let value;
 </script>
 

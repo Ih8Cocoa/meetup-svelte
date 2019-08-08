@@ -1,7 +1,7 @@
 <script>
-  export let type;
-  export let href;
-  export let mode;
+  export let type = 0;
+  export let href = "";
+  export let mode = 0;
 </script>
 
 <style>
@@ -87,7 +87,7 @@
     <slot />
   </a>
 {:else}
-  <button class={mode} {type}>
+  <button class={mode} {type} on:click>
     <slot />
   </button>
 {/if}
