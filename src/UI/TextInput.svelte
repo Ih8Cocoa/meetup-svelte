@@ -4,6 +4,16 @@
   export let label;
   export let rows = 0;
   export let value;
+  export let errorMessage = "Please enter some data";
+  export let isValid = true;
+
+  let touched = false;
+
+  $: touchedAndInvalid = !isValid && touched;
+
+  function touch() {
+    touched = true;
+  }
 </script>
 
 <style>
@@ -37,15 +47,44 @@
     width: 100%;
     margin: 0.25rem 0;
   }
+
+  .invalid {
+    border-color: red;
+    background: #fde3e3;
+  }
+
+  .error-msg {
+    color: red;
+    margin: 0.25rem 0;
+  }
 </style>
 
 <div class="form-control">
   <label for={id}>{label}</label>
   {#if inputType === 'textarea'}
-    <textarea {rows} {id} bind:value />
-  {:else if inputType === 'email'}
-    <input type="email" {id} bind:value />
+    <textarea
+      {rows}
+      {id}
+      bind:value
+      class:invalid={touchedAndInvalid}
+      on:blur={touch} />
+  {:else if ['email', 'number'].includes(inputType)}
+    <input
+      type="email"
+      {id}
+      bind:value
+      class:invalid={touchedAndInvalid}
+      on:blur={touch} />
   {:else}
-    <input type="text" {id} bind:value />
+    <input
+      type="text"
+      {id}
+      bind:value
+      class:invalid={touchedAndInvalid}
+      on:blur={touch} />
+  {/if}
+
+  {#if errorMessage && touchedAndInvalid}
+    <p class="error-msg">{errorMessage}</p>
   {/if}
 </div>
