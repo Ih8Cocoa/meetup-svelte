@@ -1,9 +1,11 @@
 <script>
   import Header from "./UI/Header.svelte";
   import Grid from "./Meetups/Grid.svelte";
+  import TextInput from "./UI/TextInput.svelte";
+  import Button from "./UI/Button.svelte";
 
   // meetups
-  const meetups = [
+  let meetups = [
     {
       id: "m1",
       title: "Coding Bootcamp",
@@ -25,6 +27,28 @@
       contactEmail: "swim@test.com"
     }
   ];
+
+  let title = "",
+    subtitle = "",
+    contactEmail = "",
+    address = "",
+    description = "",
+    imageUrl = "";
+
+  function submit() {
+    meetups = [
+      {
+        id: Math.random().toString(),
+        title,
+        subtitle,
+        description,
+        imageUrl,
+        address,
+        contactEmail
+      },
+      ...meetups
+    ];
+  }
 </script>
 
 <style>
@@ -42,5 +66,24 @@
 <Header />
 
 <main>
+  <!-- Form shit -->
+  <form on:submit|preventDefault={submit}>
+    <TextInput id="title" label="Title" bind:value={title} />
+    <TextInput id="subtitle" label="Subtitle" bind:value={subtitle} />
+    <TextInput id="address" label="Address" bind:value={address} />
+    <TextInput id="imageUrl" label="Image URL" bind:value={imageUrl} />
+    <TextInput
+      inputType="email"
+      id="email"
+      label="Email"
+      bind:value={contactEmail} />
+    <TextInput
+      inputType="textarea"
+      rows="3"
+      id="description"
+      label="Description"
+      bind:value={description} />
+    <Button type="submit">Save</Button>
+  </form>
   <Grid {meetups} />
 </main>
