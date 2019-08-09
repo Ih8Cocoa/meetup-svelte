@@ -7,7 +7,7 @@
   const dispatch = createEventDispatcher();
 
   function closeModal() {
-    dispatch("cancel");
+    dispatch("close");
   }
 </script>
 
@@ -52,7 +52,7 @@
 </style>
 
 <!-- For transparency shit -->
-<div class="modal-backdrop" on:click={closeModal}>hello there</div>
+<div class="modal-backdrop" on:click={closeModal} />
 
 <!-- For the actual content -->
 <div class="modal-content">

@@ -18,7 +18,7 @@
   h1 {
     color: white;
     font-family: "Roboto Slab", serif;
-    margin: 0;
+    margin: 0.5rem;
   }
 </style>
 
