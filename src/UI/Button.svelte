@@ -3,7 +3,7 @@
   export let href = "";
   export let mode = "";
   export let color = "";
-  export let disabled;
+  export let disabled = false;
 
   $: classes = mode + (color ? " " + color : "");
 </script>

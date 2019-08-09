@@ -6,20 +6,31 @@
   import Modal from "../UI/Modal.svelte";
   import { isEmpty, isEmail } from "../helpers/validation";
 
-  let title = "",
-    subtitle = "",
-    contactEmail = "",
-    address = "",
-    description = "",
-    imageUrl = "";
+  export let id = null;
+
+  let meetup = {
+    title: "",
+    subtitle: "",
+    contactEmail: "",
+    address: "",
+    description: "",
+    imageUrl: ""
+  };
+
+  if (id) {
+    // double call to unsub immediately
+    meetups.subscribe(items => {
+      meetup = items.find(i => i.id === id);
+    })();
+  }
 
   // validation deductions
-  $: validTitle = !isEmpty(title);
-  $: validSubtitle = !isEmpty(subtitle);
-  $: validAddress = !isEmpty(address);
-  $: validDescription = !isEmpty(description);
-  $: validImage = !isEmpty(imageUrl);
-  $: validEmail = !isEmpty(contactEmail) && isEmail(contactEmail);
+  $: validTitle = !isEmpty(meetup.title);
+  $: validSubtitle = !isEmpty(meetup.subtitle);
+  $: validAddress = !isEmpty(meetup.address);
+  $: validDescription = !isEmpty(meetup.description);
+  $: validImage = !isEmpty(meetup.imageUrl);
+  $: validEmail = isEmail(meetup.contactEmail);
   $: validForm =
     validTitle &&
     validSubtitle &&
@@ -34,14 +45,16 @@
   }
 
   function submit() {
-    meetups.newMeetup(
-      title,
-      subtitle,
-      contactEmail,
-      address,
-      description,
-      imageUrl
-    );
+    if (id) {
+      meetups.editMeetup(id, meetup);
+    } else {
+      meetups.newMeetup(meetup);
+    }
+    close();
+  }
+
+  function deleteMeetup() {
+    meetups.removeMeetup(id);
     close();
   }
 </script>
@@ -58,28 +71,28 @@
     <TextInput
       id="title"
       label="Title"
-      bind:value={title}
+      bind:value={meetup.title}
       isValid={validTitle} />
     <TextInput
       id="subtitle"
       label="Subtitle"
-      bind:value={subtitle}
+      bind:value={meetup.subtitle}
       isValid={validSubtitle} />
     <TextInput
       id="address"
       label="Address"
-      bind:value={address}
+      bind:value={meetup.address}
       isValid={validAddress} />
     <TextInput
       id="imageUrl"
       label="Image URL"
-      bind:value={imageUrl}
+      bind:value={meetup.imageUrl}
       isValid={validImage} />
     <TextInput
       inputType="email"
       id="email"
       label="Email"
-      bind:value={contactEmail}
+      bind:value={meetup.contactEmail}
       isValid={validEmail}
       errorMessage="Please enter a valid email address" />
     <TextInput
@@ -87,11 +100,14 @@
       rows="3"
       id="description"
       label="Description"
-      bind:value={description}
+      bind:value={meetup.description}
       isValid={validDescription} />
   </form>
   <div slot="footer">
     <Button mode="outline" on:click={close}>Cancel</Button>
     <Button on:click={submit} disabled={!validForm}>Save</Button>
+    {#if id}
+      <Button on:click={deleteMeetup}>Delete</Button>
+    {/if}
   </div>
 </Modal>

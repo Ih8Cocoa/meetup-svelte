@@ -27,7 +27,7 @@ const _meetups = writable([
 // exposing a bunch of public methods
 const meetups = {
     subscribe: _meetups.subscribe,
-    newMeetup: (title, subtitle, contactEmail, address, description, imageUrl) => {
+    newMeetup: ({ title, subtitle, contactEmail, address, description, imageUrl }) => {
         const meetupData = {
             title,
             subtitle,
@@ -48,6 +48,19 @@ const meetups = {
             }
             return items;
         })
+    },
+    editMeetup: (id, { title, subtitle, contactEmail, address, description, imageUrl }) => {
+        _meetups.update(items => {
+            const meetupIndex = items.findIndex(m => m.id === id);
+            if (meetupIndex !== -1) {
+                const editedMeetup = { id, title, subtitle, contactEmail, address, description, imageUrl };
+                items[meetupIndex] = editedMeetup;
+            }
+            return items;
+        })
+    },
+    removeMeetup: (id) => {
+        _meetups.update(items => items.filter(m => m.id !== id));
     }
 }
 

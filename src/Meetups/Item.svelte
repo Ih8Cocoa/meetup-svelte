@@ -5,7 +5,7 @@
   import meetups from "../stores/meetups";
 
   export let title;
-  export let id = 0;
+  export let id;
   export let subtitle;
   export let imageUrl;
   export let description;
@@ -21,6 +21,10 @@
 
   function showDetails() {
     dispatch("showdetails", id);
+  }
+
+  function edit() {
+    dispatch("edit", id);
   }
 </script>
 
@@ -100,6 +104,7 @@
     <p>{description}</p>
   </div>
   <footer>
+    <Button mode="outline" on:click={edit}>Edit</Button>
     <Button href="mailto:{contactEmail}">Contact me</Button>
     <Button
       mode="outline"

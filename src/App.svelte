@@ -7,20 +7,31 @@
   import meetups from "./stores/meetups";
   import Details from "./Meetups/Details.svelte";
 
-  let editMode = "";
+  let editMode = null;
   let currentPage = "overview";
   let id = null;
+  let editedId;
 
   function close() {
-    editMode = "";
+    resetMode();
   }
 
   function showDetails({ detail }) {
-	id = detail;
+    id = detail;
   }
 
   function deleteId() {
-	  id = null;
+    id = null;
+  }
+
+  function edit({ detail }) {
+    editedId = detail;
+    editMode = true;
+  }
+
+  function resetMode() {
+    editMode = null;
+    editedId = null;
   }
 </script>
 
@@ -28,30 +39,17 @@
   main {
     margin-top: 5rem;
   }
-
-  .meetup-control {
-    margin: 1rem;
-  }
 </style>
 
 <Header />
 
 <main>
   {#if id === null}
-    {#if editMode === 'add'}
-      <EditMeetup on:close={close} />
-    {:else}
-      <div class="meetup-control">
-        <Button
-          on:click={() => {
-            editMode = 'add';
-          }}>
-          New Meetup
-        </Button>
-      </div>
+    {#if editMode}
+      <EditMeetup on:close={close} id={editedId} />
     {/if}
-    <Grid meetups={$meetups} on:showdetails={showDetails} />
+    <Grid meetups={$meetups} on:showdetails={showDetails} on:edit={edit} />
   {:else}
-	<Details {id} on:close={deleteId} />
+    <Details {id} on:close={deleteId} />
   {/if}
 </main>
