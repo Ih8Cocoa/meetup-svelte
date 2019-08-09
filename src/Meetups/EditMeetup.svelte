@@ -19,6 +19,12 @@
   $: validDescription = !isEmpty(description);
   $: validImage = !isEmpty(imageUrl);
   $: validEmail = !isEmpty(contactEmail) && isEmail(contactEmail);
+  $: validForm =
+    validTitle &&
+    validSubtitle &&
+    validAddress & validDescription &&
+    validImage &&
+    validEmail;
 
   const dispatch = createEventDispatcher();
 
@@ -84,6 +90,6 @@
   </form>
   <div slot="footer">
     <Button mode="outline" on:click={cancel}>Cancel</Button>
-    <Button on:click={submit}>Save</Button>
+    <Button on:click={submit} disabled={!validForm}>Save</Button>
   </div>
 </Modal>

@@ -3,6 +3,7 @@
   export let href = "";
   export let mode = "";
   export let color = "";
+  export let disabled;
 
   $: classes = mode + (color ? " " + color : "");
 </script>
@@ -90,7 +91,7 @@
     <slot />
   </a>
 {:else}
-  <button class={classes} {type} on:click>
+  <button class={classes} {type} on:click {disabled}>
     <slot />
   </button>
 {/if}

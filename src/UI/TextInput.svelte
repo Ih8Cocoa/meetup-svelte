@@ -68,7 +68,7 @@
       bind:value
       class:invalid={touchedAndInvalid}
       on:blur={touch} />
-  {:else if ['email', 'number'].includes(inputType)}
+  {:else if inputType === 'email'}
     <input
       type="email"
       {id}
