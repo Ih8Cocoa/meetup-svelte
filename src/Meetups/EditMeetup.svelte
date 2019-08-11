@@ -46,15 +46,50 @@
 
 	function submit() {
 		if (id) {
-			meetups.editMeetup(id, meetup);
+			fetch(`https://svelte-test-store.firebaseio.com/meetups/${id}.json`, {
+				method: 'PATCH',
+				// make a copy of the object without the ID attribute
+				body: JSON.stringify({...meetup, id: undefined}),
+				headers: { 'Content-Type': 'application/json' }
+			})
+				.then(res => {
+					if (!res.ok) {
+						throw new Error('oops');
+					}
+					meetups.editMeetup(id, meetup);
+				})
+				.catch(console.error)
 		} else {
-			meetups.newMeetup(meetup);
+			const meetupWithFav = {...meetup, isFavorite: false}
+			fetch('https://svelte-test-store.firebaseio.com/meetups.json', {
+				method: 'POST',
+				body: JSON.stringify(meetupWithFav),
+				headers: { 'Content-Type': 'application/json' }
+			})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error('Failed');
+				}
+				return res.json();
+			})
+			.then(json => meetups.newMeetup({...meetupWithFav, id: json.name}))
+			.catch(console.error)
+			
 		}
 		close();
 	}
 
 	function deleteMeetup() {
-		meetups.removeMeetup(id);
+		fetch(`https://svelte-test-store.firebaseio.com/meetups/${id}.json`, {
+				method: 'DELETE'
+			})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error("Can't delete")
+				}
+				meetups.removeMeetup(id);
+			})
+			.catch(console.error)
 		close();
 	}
 </script>

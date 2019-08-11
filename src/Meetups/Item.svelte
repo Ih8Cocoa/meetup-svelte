@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 	import Button from "../UI/Button.svelte";
 	import Badge from "../UI/Badge.svelte";
+	import Spinner from '../UI/Spinner.svelte';
 	import meetups from "../stores/meetups";
 
 	export let title;
@@ -13,10 +14,27 @@
 	export let contactEmail;
 	export let isFavorite = false;
 
+	let isLoading = false;
+
 	const dispatch = createEventDispatcher();
 
 	function toggleFavorite() {
-		meetups.toggleFavorite(id);
+		isLoading = true;
+		fetch(`https://svelte-test-store.firebaseio.com/meetups/${id}.json`, {
+				method: 'PATCH',
+				body: JSON.stringify({isFavorite: !isFavorite}),
+				headers: { 'Content-Type': 'application/json' }
+			})
+			.then(res => {
+				if (!res.ok) {
+					throw new Error("Can't change fav status")
+				}
+				meetups.toggleFavorite(id);
+			})
+			.catch(console.error)
+			.finally(() => {
+				isLoading = false
+			})
 	}
 
 	function showDetails() {
@@ -101,6 +119,7 @@
 		<Button href="mailto:{contactEmail}">Contact me</Button>
 		<Button
 			mode="outline"
+			disabled={isLoading}
 			color={isFavorite ? '' : 'success'}
 			on:click={toggleFavorite}>
 			{isFavorite ? 'Unf' : 'F'}avorite

@@ -56,5 +56,7 @@
 		<div transition:scale animate:flip={{ duration: 200 }}>
 			<Item {...meetup} on:showdetails on:edit />
 		</div>
+	{:else}
+		<p>No Meetups found</p>
 	{/each}
 </section>
